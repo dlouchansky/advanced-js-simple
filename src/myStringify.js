@@ -1,10 +1,3 @@
-// currently all primitive types and Array, Number, Boolean objects supported
-
-// Questions for lecture:
-// constructing objects using "prototype" property
-// constructing objects using "new" keyword
-//
-
 define(function () {
 
         function lastComma(index, array) {
@@ -15,11 +8,10 @@ define(function () {
             return "";
         }
 
-        function Stringifier(source) {
-
-            function stringifyObjectProperty(accumulator, current, index, array) {
-                var value = Stringifier(source[current]).stringify();
-                var key = Stringifier(current).stringify();
+        function stringifyObjectProperty(source) {
+            return function (accumulator, current, index, array) {
+                var value = stringifySomething(source[current]);
+                var key = stringifySomething(current);
 
                 if (value === "") {
                     return accumulator;
@@ -27,9 +19,11 @@ define(function () {
 
                 return accumulator + key + ":" + value + lastComma(index, array);
             }
+        }
 
-            function stringifyArrayElement(accumulator, current, index, array) {
-                var value = Stringifier(source[current]).stringify();
+        function stringifyArrayElement(source) {
+            return function (accumulator, current, index, array) {
+                var value = stringifySomething(source[current]);
 
                 if (value === "") {
                     return accumulator;
@@ -37,37 +31,34 @@ define(function () {
 
                 return accumulator + value + lastComma(index, array);
             }
+        }
 
-            function stringifySomething() {
-                if (typeof source == "undefined") {
-                    return "";
-                }
-
-                if (source == null) {
-                    return null;
-                }
-
-                if (typeof source == "string" || source instanceof String) {
-                    return '"' + source + '"';
-                }
-
-                if (typeof source == "boolean" || typeof source == "number" || source instanceof Boolean || source instanceof Number) {
-                    return source;
-                }
-
-                var enumeratedMethods = Object.keys(source);
-
-                if (Array.isArray(source)) {
-                    return "[" + enumeratedMethods.reduce(stringifyArrayElement, "") + "]";
-                }
-
-                return "{" + enumeratedMethods.reduce(stringifyObjectProperty, "") + "}";
+        function stringifySomething(source) {
+            if (typeof source == "undefined") {
+                return "";
             }
 
-            return {
-                stringify: stringifySomething
-            };
+            if (source == null) {
+                return null;
+            }
+
+            if (typeof source == "string" || source instanceof String) {
+                return '"' + source + '"';
+            }
+
+            if (typeof source == "boolean" || typeof source == "number" || source instanceof Boolean || source instanceof Number) {
+                return source;
+            }
+
+            var enumeratedMethods = Object.keys(source);
+
+            if (Array.isArray(source)) {
+                return "[" + enumeratedMethods.reduce(stringifyArrayElement(source), "") + "]";
+            }
+
+            return "{" + enumeratedMethods.reduce(stringifyObjectProperty(source), "") + "}";
         }
+
 
         return function (obj) {
 
@@ -87,7 +78,7 @@ define(function () {
                 return '"' + obj + '"';
             }
 
-            return Stringifier(obj).stringify();
+            return stringifySomething(obj);
         };
 
     }
