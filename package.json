@@ -1,0 +1,19 @@
+{
+  "name": "advancedJs",
+  "private": true,
+  "version": "0.0.1",
+  "description": "Scripts from CTCo advanced JS courses",
+  "main": "",
+  "scripts": {
+    "test": "./node_modules/karma/bin/karma start --single-run"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "karma": "^0.13.10",
+    "karma-firefox-launcher": "latest",
+    "karma-jasmine": "~0.1.0",
+    "karma-requirejs": "^0.2.1",
+    "requirejs": "^2.1.11"
+  }
+}
